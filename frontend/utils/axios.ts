@@ -1,16 +1,16 @@
 import axios from "axios";
 
-const customAxios = (coockie?: string) => {
+const customAxios = (cookie?: string) => {
   const config = {
     withCredentials: true,
     headers: {},
   };
   // When we send request on server side the cookies
-  // will not send along axios by default so we add the coockie
+  // will not send along axio so we add the cookie
   // if there was any
-  if (coockie) {
+  if (cookie) {
     config["headers"] = {
-      Cookie: coockie,
+      Cookie: cookie,
     };
   }
   return axios.create(config);
