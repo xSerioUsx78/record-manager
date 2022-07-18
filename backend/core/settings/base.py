@@ -126,9 +126,13 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'users.authentication.CustomTokenAuthentication'
     ]
 }
+
+CORS_ALLOW_CREDENTIALS = True
+
+HTTP_ONLY_TOKEN_KEY = "token"
 
 
 """
@@ -142,4 +146,3 @@ frontend server we can set the below settings
 # SESSION_COOKIE_HTTPONLY = True
 
 # CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
-# CORS_ALLOW_CREDENTIALS = True

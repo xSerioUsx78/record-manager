@@ -1,12 +1,19 @@
 import axios from "axios";
 
-
-const authAxios = (token: string | null) => {
-  return axios.create({
-    headers: {
-      Authorization: `Token ${token}`
-    }
-  });
+const customAxios = (coockie?: string) => {
+  const config = {
+    withCredentials: true,
+    headers: {},
+  };
+  // When we send request on server side the cookies
+  // will not send along axios by default so we add the coockie
+  // if there was any
+  if (coockie) {
+    config["headers"] = {
+      Cookie: coockie,
+    };
+  }
+  return axios.create(config);
 };
 
-export default authAxios;
+export default customAxios;

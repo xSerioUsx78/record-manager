@@ -1,36 +1,30 @@
-import React, { useMemo, useState } from 'react';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { useRouter } from 'next/router';
-import authAxios from '../../utils/axios';
-import requests from '../../utils/requests';
-import Button from '../layout/Button';
-import { CustomSwal } from '../../utils/messages';
-import { recordResultsItemInterface } from '../../interfaces/record';
-import { useAppSelector } from '../../redux/store';
-
+import React, { useMemo, useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { useRouter } from "next/router";
+import axios from "../../utils/axios";
+import requests from "../../utils/requests";
+import Button from "../layout/Button";
+import { CustomSwal } from "../../utils/messages";
+import { recordResultsItemInterface } from "../../interfaces/record";
 
 interface propsInterface {
-  record: recordResultsItemInterface
-};
+  record: recordResultsItemInterface;
+}
 
 interface initialValuesInterface {
-  title: string,
-  description: string
-};
+  title: string;
+  description: string;
+}
 
-
-const Edit: React.FC<propsInterface> = ({record}) => {
-
-  const token = useAppSelector(state => state.auth.token);
-
+const Edit: React.FC<propsInterface> = ({ record }) => {
   const router = useRouter();
 
   const initialValues: initialValuesInterface = useMemo(() => {
     return {
       title: record.title,
-      description: record.description
-    }
+      description: record.description,
+    };
   }, [record]);
 
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
@@ -38,45 +32,42 @@ const Edit: React.FC<propsInterface> = ({record}) => {
   return (
     <div className="container mt-4 mx-auto">
       <div className="md:px-20 md:mx-20">
-      <Formik
-        initialValues={initialValues}
-        validationSchema={Yup.object({
-          title: Yup.string()
-          .required('This field may not be blank!')
-          .max(50, "The characters can't be more than 50!"),
-          description: Yup.string()
-          .required('This field may not be blank!')
-        })}
-        onSubmit={
-          (values) => {
+        <Formik
+          initialValues={initialValues}
+          validationSchema={Yup.object({
+            title: Yup.string()
+              .required("This field may not be blank!")
+              .max(50, "The characters can't be more than 50!"),
+            description: Yup.string().required("This field may not be blank!"),
+          })}
+          onSubmit={(values) => {
             const postData = async () => {
               try {
                 setSubmitLoading(true);
-                await authAxios(token!).put(requests.recordDetail(record.id), values);
+                await axios().put(requests.recordDetail(record.id), values);
                 CustomSwal.fire({
-                  title: 'Success!',
-                  text: 'Record updated successfully!',
-                  icon: 'success'
+                  title: "Success!",
+                  text: "Record updated successfully!",
+                  icon: "success",
                 }).then(() => {
-                  router.push('/');
+                  router.push("/");
                 });
               } catch (e) {
                 console.log(e);
               } finally {
                 setSubmitLoading(false);
-              };
+              }
             };
             postData();
-          }
-        }
+          }}
         >
           {({
             values,
             errors,
-            handleChange, 
+            handleChange,
             handleSubmit,
             handleBlur,
-            touched
+            touched,
           }) => (
             <form method="POST" onSubmit={handleSubmit}>
               <div className="shadow overflow-hidden sm:rounded-md">
@@ -95,15 +86,11 @@ const Edit: React.FC<propsInterface> = ({record}) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {
-                      touched.title
-                      &&
-                      errors.title 
-                      &&
-                      <div className="text-red-600 fw-medium mt-2">
-                        {errors.title}
-                      </div> 
-                      }
+                      {touched.title && errors.title && (
+                        <div className="text-red-600 fw-medium mt-2">
+                          {errors.title}
+                        </div>
+                      )}
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="description" className="form-label">
@@ -118,24 +105,20 @@ const Edit: React.FC<propsInterface> = ({record}) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {
-                      touched.description
-                      &&
-                      errors.description 
-                      &&
-                      <div className="text-red-600 fw-medium mt-2">
-                        {errors.description}
-                      </div> 
-                      }
+                      {touched.description && errors.description && (
+                        <div className="text-red-600 fw-medium mt-2">
+                          {errors.description}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                   <Button
-                  className="btn btn-green-outline"
-                  text="Update record"
-                  type="submit"
-                  loading={submitLoading}
+                    className="btn btn-green-outline"
+                    text="Update record"
+                    type="submit"
+                    loading={submitLoading}
                   />
                 </div>
               </div>
@@ -144,7 +127,7 @@ const Edit: React.FC<propsInterface> = ({record}) => {
         </Formik>
       </div>
     </div>
-  )
+  );
 };
 
 export default Edit;

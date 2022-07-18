@@ -17,7 +17,6 @@ class RegisterView(generics.GenericAPIView):
 
 
 class LoginView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication,]
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
@@ -34,7 +33,6 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(generics.GenericAPIView):
-    authentication_classes = [authentication.TokenAuthentication,]
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
