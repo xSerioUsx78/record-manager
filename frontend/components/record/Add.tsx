@@ -1,31 +1,25 @@
-import React, { useMemo, useState } from 'react';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { useRouter } from 'next/router';
-import authAxios from '../../utils/axios';
-import requests from '../../utils/requests';
-import Button from '../layout/Button';
-import { CustomSwal } from '../../utils/messages';
-import { useAppSelector } from '../../redux/store';
-
+import React, { useMemo, useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { useRouter } from "next/router";
+import axios from "../../utils/axios";
+import requests from "../../utils/requests";
+import Button from "../layout/Button";
+import { CustomSwal } from "../../utils/messages";
 
 interface initialValuesInterface {
-  title: string,
-  description: string
-};
-
+  title: string;
+  description: string;
+}
 
 const Add: React.FC = () => {
-
   const router = useRouter();
-
-  const auth = useAppSelector(state => state.auth);
 
   const initialValues: initialValuesInterface = useMemo(() => {
     return {
-      title: '',
-      description: ''
-    }
+      title: "",
+      description: "",
+    };
   }, []);
 
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
@@ -34,44 +28,41 @@ const Add: React.FC = () => {
     <div className="container mt-4 mx-auto">
       <div className="md:px-20 md:mx-20">
         <Formik
-        initialValues={initialValues}
-        validationSchema={Yup.object({
-          title: Yup.string()
-          .required('This field may not be blank!')
-          .max(50, "The characters can't be more than 50!"),
-          description: Yup.string()
-          .required('This field may not be blank!')
-        })}
-        onSubmit={
-          (values) => {
+          initialValues={initialValues}
+          validationSchema={Yup.object({
+            title: Yup.string()
+              .required("This field may not be blank!")
+              .max(50, "The characters can't be more than 50!"),
+            description: Yup.string().required("This field may not be blank!"),
+          })}
+          onSubmit={(values) => {
             const postData = async () => {
               try {
                 setSubmitLoading(true);
-                await authAxios(auth.token!).post(requests.record, values);
+                await axios().post(requests.record, values);
                 CustomSwal.fire({
-                  title: 'Success!',
-                  text: 'Record created successfully!',
-                  icon: 'success'
+                  title: "Success!",
+                  text: "Record created successfully!",
+                  icon: "success",
                 }).then(() => {
-                  router.push('/');
+                  router.push("/");
                 });
               } catch (e) {
                 console.log(e);
               } finally {
                 setSubmitLoading(false);
-              };
+              }
             };
             postData();
-          }
-        }
+          }}
         >
           {({
             values,
             errors,
-            handleChange, 
+            handleChange,
             handleSubmit,
             handleBlur,
-            touched
+            touched,
           }) => (
             <form method="POST" onSubmit={handleSubmit}>
               <div className="shadow overflow-hidden sm:rounded-md">
@@ -90,15 +81,11 @@ const Add: React.FC = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {
-                      touched.title
-                      &&
-                      errors.title 
-                      &&
-                      <div className="text-red-600 fw-medium mt-2">
-                        {errors.title}
-                      </div> 
-                      }
+                      {touched.title && errors.title && (
+                        <div className="text-red-600 fw-medium mt-2">
+                          {errors.title}
+                        </div>
+                      )}
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="description" className="form-label">
@@ -113,24 +100,20 @@ const Add: React.FC = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {
-                      touched.description
-                      &&
-                      errors.description 
-                      &&
-                      <div className="text-red-600 fw-medium mt-2">
-                        {errors.description}
-                      </div> 
-                      }
+                      {touched.description && errors.description && (
+                        <div className="text-red-600 fw-medium mt-2">
+                          {errors.description}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                   <Button
-                  className="btn btn-green-outline"
-                  text="Add record"
-                  type="submit"
-                  loading={submitLoading}
+                    className="btn btn-green-outline"
+                    text="Add record"
+                    type="submit"
+                    loading={submitLoading}
                   />
                 </div>
               </div>
@@ -139,7 +122,7 @@ const Add: React.FC = () => {
         </Formik>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Add;
